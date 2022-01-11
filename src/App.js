@@ -156,7 +156,7 @@ function App() {
     );
 
     //links: captures value in square bracket as $1 for link text and value in parentheses for the href
-    input = input.replace(regexValues.linkValues, `<a href=$2>$1</a> \n`);
+    input = input.replace(regexValues.linkValues, ` \n`);
 
     const latexOutput = input;
 
@@ -175,6 +175,8 @@ function App() {
         }}
       >
         <textarea
+          placeholder="Write your Markdown here"
+          title="Markdown"
           name="markdown"
           id="markdown"
           cols="30"
@@ -183,9 +185,12 @@ function App() {
           value={input}
           spellCheck={false}
           style={{ resize: "none" }}
-        ></textarea>
+        >
+          Markdown
+        </textarea>
 
         <textarea
+          placeholder="Raw HTML Output"
           name="output"
           id="output"
           cols="30"
@@ -197,6 +202,7 @@ function App() {
         ></textarea>
 
         <textarea
+          placeholder="LaTeX Output"
           name="output"
           id="output"
           cols="30"
