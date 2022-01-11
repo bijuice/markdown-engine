@@ -1,49 +1,166 @@
 import { useState } from "react";
 
+//groups all regex values into single object for reusability
+const regexValues = {
+  //heading values
+  h1: /^# (.*$)/gim,
+  h2: /^## (.*$)/gim,
+  h3: /^### (.*$)/gim,
+  h4: /^#### (.*$)/gim,
+  h5: /^##### (.*$)/gim,
+  h6: /^###### (.*$)/gim,
+
+  //ordered list items
+  firstOrderedItem: /(\d+\. .*\n\d)/gim,
+  orderedListItem: /\d+\. (.*)/gim,
+  lastOrderedItem: /(\d+\. .*\n)\n/gim,
+
+  //unordered list
+  firstUnorderedItem: /([*|\-|+] .*\n[*|\-|+])/gim,
+  lastUnorderedItem: /([*|\-|+] .*\n)\n/gim,
+  unorderedListItem: /[*|\-|+] (.*)/gim,
+
+  //text formating
+  italic: /\*(.*)\*/gi,
+  bold: /\*\*(.*)\*\*/gi,
+  strikethrough: /~~(.*)~~/gi,
+
+  //images
+  imageValues: /!\[(.*)\]\((.*)"(.*)"\)/gim,
+
+  //links
+  linkValues: /\[(.*)\]\((.*)\)/gim,
+
+  //code block
+  codeBlock: /^```((.|\n)*)```/gim,
+
+  //code variables
+  variable: /(^\w\s=.*)/gim,
+
+  //inline code
+  inlineCode: /`(.*)`/gim,
+
+  // horizontal rule
+  horizontalRule: /(^(\*|-|_){3,})/gim,
+
+  // carriage return
+  carriageReturn: /\n/gim,
+
+  //block quote
+  blockquote: /^> (.*)/gim,
+
+  //paragraph
+};
+
 function App() {
   const [input, setInput] = useState("");
 
-  console.log(input);
-
   //this function parses an input and returns html
-  const markdownEngine = (input) => {
-    //heading tags
-    const h1 = /^# (.*$)/gim;
-    const h2 = /^## (.*$)/gim;
-    const h3 = /^### (.*$)/gim;
-    const h4 = /^#### (.*$)/gim;
-    const h5 = /^##### (.*$)/gim;
-    const h6 = /^###### (.*$)/gim;
+  const htmlMarkdownEngine = (input) => {
+    //headings
+    input = input
+      .replace(regexValues.h1, `<h1>$1</h1> \n`)
+      .replace(regexValues.h2, `<h2>$1</h2> \n`)
+      .replace(regexValues.h3, `<h3>$1</h3> \n`)
+      .replace(regexValues.h4, `<h4>$1</h4> \n`)
+      .replace(regexValues.h5, `<h5>$1</h5> \n`)
+      .replace(regexValues.h6, `<h6>$1</h6> \n`);
 
-    const headings = input
-      .replace(h1, `<h1>$1</h1>`)
-      .replace(h2, `<h2>$1</h2>`)
-      .replace(h3, `<h3>$1</h3>`)
-      .replace(h4, `<h4>$1</h4>`)
-      .replace(h5, `<h5>$1</h5>`)
-      .replace(h6, `<h6>$1</h6>`);
+    //handles first ordered list item. Looks for a digit followed by return followed by another digit and adds <ol> tag before
+    input = input.replace(regexValues.firstOrderedItem, `<ol>\n$1`);
+    //handles last ordered list item. Looks for two return characters and prepends </ol> tag after
+    input = input.replace(regexValues.lastOrderedItem, `$1</ol>\n`);
+    //handles single ordered list item
+    input = input.replace(regexValues.orderedListItem, `  <li>$1</li>`);
+
+    //unordered list items
+    input = input.replace(regexValues.firstUnorderedItem, `<ul>\n$1`);
+    input = input.replace(regexValues.lastUnorderedItem, `$1</ul>\n`);
+    input = input.replace(regexValues.unorderedListItem, `  <li>$1</li>`);
 
     //text formating
-    const italic = /\*(.*)\*/gim;
-    const bold = /\*\*(.*)\*\*/gim;
-    const strikethrough = /~~(.*)~~/gim;
+    input = input
+      .replace(regexValues.bold, `<b>$1</b> \n`)
+      .replace(regexValues.italic, `<i>$1</i> \n`)
+      .replace(regexValues.strikethrough, `<strike>$1</strike> \n`);
 
-    const formating = headings
-      .replace(bold, `<b>$1</b>`)
-      .replace(italic, `<i>$1</i>`)
-      .replace(strikethrough, `<strike>$1</strike>`);
+    //images: captures value within square bracket as $1 for alt, value in parentheses as $2 for src and $3 for title
+    input = input.replace(
+      regexValues.imageValues,
+      `<img src=$2 alt="$1"> $3 \n`
+    );
 
-    //images
-    const imageValues = /!\[(.*)\]\((.*)"(.*)"\)/gim;
-    const images = formating.replace(imageValues, `<img src=$2 alt="$1"> $3`);
+    //links: captures value in square bracket as $1 for link text and value in parentheses for the href
+    input = input.replace(regexValues.linkValues, `<a href=$2>$1</a> \n`);
 
-    //links
-    const linkValues = /\[(.*)\]\((.*)\)/gim;
-    const links = images.replace(linkValues, `<a href=$2>$1</a>`);
+    //code variables
+    input = input.replace(regexValues.variable, `<var>$1</var>`);
 
-    const htmlOutput = links;
+    // //inline code
+    // input = input.replace(regexValues.inlineCode, `<code>$1</code>`);
+
+    //code block
+    input = input.replace(
+      regexValues.codeBlock,
+      `<pre>\n  <code>\n$1\n</code>\n</pre>`
+    );
+
+    //horizontal rule
+    input = input.replace(regexValues.horizontalRule, `<hr>`);
+
+    //blockquote
+    input = input.replace(
+      regexValues.blockquote,
+      `<blockquote>$1</blockquote>`
+    );
+
+    // // carriage return
+    // input = input.replace(regexValues.carriageReturn, `\n<br>\n`);
+
+    const htmlOutput = input;
 
     return htmlOutput;
+  };
+
+  const latexMarkdownEngine = (input) => {
+    //headings
+    input = input
+      .replace(regexValues.h1, `\\title{$1} \n`)
+      .replace(regexValues.h2, `\\author{$1} \n`)
+      .replace(regexValues.h3, `\\date{$1} \n`)
+      .replace(regexValues.h4, `\\maketitle \n\n$1 \n`);
+
+    //handles single ordered list item
+    input = input.replace(regexValues.firstOrderedItem, `begin{enumerate}\n$1`);
+    input = input.replace(regexValues.lastOrderedItem, `$1end{enumerate}\n`);
+    input = input.replace(regexValues.orderedListItem, `  \\item $1`);
+
+    //unordered list item
+    input = input.replace(
+      regexValues.firstUnorderedItem,
+      `begin{enumerate}\n$1`
+    );
+    input = input.replace(regexValues.lastUnorderedItem, `$1end{enumerate}\n`);
+    input = input.replace(regexValues.unorderedListItem, `  \\item $1`);
+
+    //text formating
+    input = input
+      .replace(regexValues.bold, `textbf{$1} \n`)
+      .replace(regexValues.italic, `<i>$1</i> \n`)
+      .replace(regexValues.strikethrough, `<strike>$1</strike> \n`);
+
+    //images: captures value within square bracket as $1 for alt, value in parentheses as $2 for src and $3 for title
+    input = input.replace(
+      regexValues.imageValues,
+      `<img src=$2 alt="$1"> $3 \n`
+    );
+
+    //links: captures value in square bracket as $1 for link text and value in parentheses for the href
+    input = input.replace(regexValues.linkValues, `<a href=$2>$1</a> \n`);
+
+    const latexOutput = input;
+
+    return latexOutput;
   };
 
   return (
@@ -64,19 +181,38 @@ function App() {
           rows="10"
           onChange={(e) => setInput(e.target.value)}
           value={input}
+          spellCheck={false}
+          style={{ resize: "none" }}
         ></textarea>
+
         <textarea
           name="output"
           id="output"
           cols="30"
           rows="10"
-          style={{ paddingLeft: 30 }}
-          value={markdownEngine(input)}
+          style={{ resize: "none" }}
+          value={htmlMarkdownEngine(input)}
+          spellCheck={false}
+          disabled
+        ></textarea>
+
+        <textarea
+          name="output"
+          id="output"
+          cols="30"
+          rows="10"
+          style={{ resize: "none" }}
+          value={latexMarkdownEngine(input)}
+          spellCheck={false}
+          disabled
         ></textarea>
       </div>
 
       <h1>HTML Output</h1>
-      <div dangerouslySetInnerHTML={{ __html: markdownEngine(input) }}></div>
+      <div
+        dangerouslySetInnerHTML={{ __html: htmlMarkdownEngine(input) }}
+        style={{ border: "0.5px solid", padding: 20, minHeight: 500 }}
+      ></div>
     </div>
   );
 }
