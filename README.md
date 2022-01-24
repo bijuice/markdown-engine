@@ -1,70 +1,43 @@
-# Getting Started with Create React App
+# React Markdown Engine
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+You can try out this web app using this link : https://markdown-engine-arehmtulla.herokuapp.com/
 
-## Available Scripts
+## Description:
 
-In the project directory, you can run:
+This is a Markdown parser built using React that converts markdown into html and LaTeX. It also visualizes the html output.
 
-### `npm start`
+Packages/Technologies:
+- React
+- Regex
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+#### Folder Structure
+- App.js : main file
+- utilities/parser.js : does all parsing
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+This app uses Regex to detect written markdown and then uses the built-in replace() function to replace the markdown with html or LaTeX. It uses a regexValues object to store all possible regex values then uses two different functions to return html or LaTeX. It parses the entirety of the Markdown spec but does not parse extended markdown.
 
-### `npm test`
+## System Limitations
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This system cannot parse extended Markdown
 
-### `npm run build`
+## Possible Improvements
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Implement Extended Markdown
+- Add the possibility of downloading the output in the respective format.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Installation Instructions
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+git clone https://github.com/bijuice/markdown-engine.git
+cd ./markdown-engine/
+npm install
+```
 
-### `npm run eject`
+## Usage
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Run server:
+```
+cd ./markdown-engine/
+npm run start
+```
+Navigate to localhost.
